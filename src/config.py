@@ -1,8 +1,9 @@
 # src/config.py
-
 # 디스플레이 설정
 WINDOW_WIDTH = 240
 WINDOW_HEIGHT = 240
+WORLD_WIDTH = 800  # 실제 게임 월드의 너비 (200야드를 픽셀로 환산)
+WORLD_HEIGHT = 240
 FPS = 60
 
 # 색상 정의
@@ -16,6 +17,25 @@ POWER_GAUGE_SPEED = 3  # 게이지 바늘 회전 속도
 MAX_POWER = 100
 BALL_SPEED = 5
 GRAVITY = 9.8
+
+# 이미지 경로
+IMAGES = {
+    'BACKGROUND': {
+        'SKY': 'background/sky.png',
+        'MOUNTAINS': 'background/mountains.png',
+        'GROUND': 'background/ground.png'
+    },
+    'PLAYER': {
+        'GOLFER': 'player/golfer.png'
+    },
+    'OBJECTS': {
+        'BALL': 'objects/ball.png',
+        'FLAG': 'objects/flag.png'
+    },
+    'UI': {
+        'POWER_GAUGE': 'ui/power-gauge.png'
+    }
+}
 
 # 입력 키 매핑
 KEYS = {
