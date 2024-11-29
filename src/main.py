@@ -24,7 +24,7 @@ class Game:
        if USE_GPIO:
            self.joystick = Joystick()
            self.image = Image.new("RGB", (self.joystick.width, self.joystick.height))
-           self.draw = ImageDraw.Draw(self.image)
+           self.image_draw = ImageDraw.Draw(self.image)  # draw -> image_draw로 변경
        else:
            pygame.init()
            self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -147,20 +147,14 @@ class Game:
        
        self.update_game_state()
 
-   def draw(self):
-       if USE_GPIO:
-           self.draw_tft()
-       else:
-           self.draw_pygame()
-
    def draw_tft(self):
        try:
            # TFT 디스플레이용 그리기
            self.image = Image.new("RGB", (self.joystick.width, self.joystick.height))
-           self.draw = ImageDraw.Draw(self.image)
+           self.image_draw = ImageDraw.Draw(self.image)
            
            # 배경 색상
-           self.draw.rectangle((0, 0, self.joystick.width, self.joystick.height), 
+           self.image_draw.rectangle((0, 0, self.joystick.width, self.joystick.height), 
                              fill=(135, 206, 235))
            
            # 배경 타일링
@@ -197,7 +191,7 @@ class Game:
                angle_rad = math.radians(self.aim_angle)
                end_pos = (int(start_pos[0] + math.cos(angle_rad) * 50),
                          int(start_pos[1] + math.sin(angle_rad) * 50))
-               self.draw.line([start_pos, end_pos], fill=(255, 0, 0), width=2)
+               self.image_draw.line([start_pos, end_pos], fill=(255, 0, 0), width=2)
            
            # TFT 디스플레이 업데이트
            self.joystick.disp.image(self.image)
@@ -263,7 +257,11 @@ class Game:
        while self.running:
            self.handle_events()
            self.update()
-           self.draw()
+           if USE_GPIO:
+               self.draw_tft()
+           else:
+               self.draw_pygame()
+           
            if not USE_GPIO:
                self.clock.tick(FPS)
            else:
