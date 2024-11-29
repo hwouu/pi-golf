@@ -6,10 +6,10 @@ import math
 import os
 import time
 from enum import Enum
-from src.config import *
-from src.sprites.gauge import PowerGauge
-from src.utils.image_loader import ImageLoader
-from src.utils.joystick import Joystick, USE_GPIO
+from config import *
+from sprites.gauge import PowerGauge
+from utils.image_loader import ImageLoader
+from utils.joystick import Joystick, USE_GPIO
 
 class GameState(Enum):
    READY = "READY"       # 시작 상태
@@ -154,53 +154,55 @@ class Game:
            self.draw_pygame()
 
    def draw_tft(self):
-       # TFT 디스플레이용 그리기
-       self.draw.rectangle((0, 0, self.joystick.width, self.joystick.height), 
-                         fill=(135, 206, 235))
-       
-       # 배경 타일링
-       sky_width = self.images['sky'].width
-       num_tiles = (WORLD_WIDTH // sky_width) + 2
-       
-       for i in range(num_tiles):
-           x_pos = i * sky_width - int(self.camera.x % sky_width)
-           self.image.paste(self.images['sky'], (x_pos, 0))
-           self.image.paste(self.images['mountains'], 
-                          (x_pos, WINDOW_HEIGHT - self.images['mountains'].height))
-           self.image.paste(self.images['ground'],
-                          (x_pos, WINDOW_HEIGHT - self.images['ground'].height))
-       
-       # 깃발 그리기
-       flag_x = int(self.flag_position.x - self.camera.x)
-       flag_y = int(self.flag_position.y)
-       self.image.paste(self.images['flag'], (flag_x, flag_y))
-       
-       # 골퍼 그리기
-       golfer_y = WINDOW_HEIGHT - self.images['golfer'].height - 10
-       self.image.paste(self.images['golfer'], (50, golfer_y))
-       
-       # 골프공 그리기
-       ball_x = int(self.ball_position.x - self.camera.x - self.images['ball'].width/2)
-       ball_y = int(self.ball_position.y - self.images['ball'].height/2)
-       self.image.paste(self.images['ball'], (ball_x, ball_y))
-       
-       # 조준선 그리기
-       if self.game_state in [GameState.READY, GameState.AIMING]:
-           start_pos = (int(self.ball_position.x - self.camera.x), 
-                       int(self.ball_position.y))
-           angle_rad = math.radians(self.aim_angle)
-           end_pos = (int(start_pos[0] + math.cos(angle_rad) * 50),
-                     int(start_pos[1] + math.sin(angle_rad) * 50))
-           self.draw.line([start_pos, end_pos], fill=(255, 0, 0), width=2)
-       
-       # 게임 상태 표시
-       if self.game_state in [GameState.SUCCESS, GameState.FAIL]:
-           text = f"Score: {self.score}" if self.game_state == GameState.SUCCESS else "Game Over"
-           # PIL에서는 텍스트 렌더링을 위한 별도의 설정 필요
-           # 여기에 텍스트 렌더링 코드 추가
-       
-       # TFT 디스플레이 업데이트
-       self.joystick.disp.image(self.image)
+       try:
+           # TFT 디스플레이용 그리기
+           self.image = Image.new("RGB", (self.joystick.width, self.joystick.height))
+           self.draw = ImageDraw.Draw(self.image)
+           
+           # 배경 색상
+           self.draw.rectangle((0, 0, self.joystick.width, self.joystick.height), 
+                             fill=(135, 206, 235))
+           
+           # 배경 타일링
+           sky_width = self.images['sky'].width
+           num_tiles = (WORLD_WIDTH // sky_width) + 2
+           
+           for i in range(num_tiles):
+               x_pos = i * sky_width - int(self.camera.x % sky_width)
+               # PIL 이미지 붙여넣기
+               self.image.paste(self.images['sky'], (x_pos, 0))
+               self.image.paste(self.images['mountains'], 
+                              (x_pos, WINDOW_HEIGHT - self.images['mountains'].height))
+               self.image.paste(self.images['ground'],
+                              (x_pos, WINDOW_HEIGHT - self.images['ground'].height))
+           
+           # 깃발 그리기
+           flag_x = int(self.flag_position.x - self.camera.x)
+           flag_y = int(self.flag_position.y)
+           self.image.paste(self.images['flag'], (flag_x, flag_y))
+           
+           # 골퍼 그리기
+           golfer_y = WINDOW_HEIGHT - self.images['golfer'].height - 10
+           self.image.paste(self.images['golfer'], (50, golfer_y))
+           
+           # 골프공 그리기
+           ball_x = int(self.ball_position.x - self.camera.x - self.images['ball'].width/2)
+           ball_y = int(self.ball_position.y - self.images['ball'].height/2)
+           self.image.paste(self.images['ball'], (ball_x, ball_y))
+           
+           # 조준선 그리기
+           if self.game_state in [GameState.READY, GameState.AIMING]:
+               start_pos = (int(self.ball_position.x - self.camera.x), 
+                           int(self.ball_position.y))
+               angle_rad = math.radians(self.aim_angle)
+               end_pos = (int(start_pos[0] + math.cos(angle_rad) * 50),
+                         int(start_pos[1] + math.sin(angle_rad) * 50))
+               self.draw.line([start_pos, end_pos], fill=(255, 0, 0), width=2)
+           
+           # TFT 디스플레이 업데이트
+           self.joystick.disp.image(self.image)
+       except Exception as e:
+           print(f"Draw TFT error: {e}")
 
    def draw_pygame(self):
        # Pygame용 그리기
