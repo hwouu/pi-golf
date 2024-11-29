@@ -1,1 +1,4 @@
-pygame==2.5.2
+pygame==2.6.1
+pillow==10.1.0
+numpy==1.26.2
+adafruit-circuitpython-rgb-display==3.12.0
