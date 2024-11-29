@@ -29,15 +29,15 @@ class Joystick:
             )
 
             # 버튼 설정
-            self.button_A = digitalio.DigitalInOut(board.D5)
-            self.button_B = digitalio.DigitalInOut(board.D6)
-            self.button_L = digitalio.DigitalInOut(board.D27)
-            self.button_R = digitalio.DigitalInOut(board.D23)
-            self.button_U = digitalio.DigitalInOut(board.D17)
-            self.button_D = digitalio.DigitalInOut(board.D22)
-            self.button_C = digitalio.DigitalInOut(board.D4)
+            self.button_5 = digitalio.DigitalInOut(board.D5)  # #5 버튼
+            self.button_6 = digitalio.DigitalInOut(board.D6)  # #6 버튼
+            self.button_L = digitalio.DigitalInOut(board.D27)  # 조이스틱 왼쪽
+            self.button_R = digitalio.DigitalInOut(board.D23)  # 조이스틱 오른쪽
+            self.button_U = digitalio.DigitalInOut(board.D17)  # 조이스틱 위
+            self.button_D = digitalio.DigitalInOut(board.D22)  # 조이스틱 아래
+            self.button_C = digitalio.DigitalInOut(board.D4)   # 조이스틱 중앙
 
-            for button in [self.button_A, self.button_B, self.button_L, 
+            for button in [self.button_5, self.button_6, self.button_L, 
                          self.button_R, self.button_U, self.button_D, self.button_C]:
                 button.direction = digitalio.Direction.INPUT
 

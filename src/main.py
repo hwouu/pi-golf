@@ -70,13 +70,13 @@ class Game:
                    self.aim_angle = max(self.aim_angle - ANGLE_CHANGE_SPEED, MIN_ANGLE)
                if not self.joystick.button_D.value:  # 아래쪽
                    self.aim_angle = min(self.aim_angle + ANGLE_CHANGE_SPEED, MAX_ANGLE)
-               if not self.joystick.button_A.value:  # A 버튼 (발사)
+               if not self.joystick.button_5.value:  # #5 버튼으로 변경 (이전의 A 버튼 대신)
                    self.game_state = GameState.POWER
                    self.power_gauge.start_oscillation()
-               elif self.power_gauge.oscillating:  # A 버튼을 뗐을 때
-                   power, angle = self.power_gauge.stop_oscillation()
-                   self.shoot_ball(power)
-                   self.game_state = GameState.SHOT
+               elif self.power_gauge.oscillating:  # #5 버튼을 뗐을 때 
+                    power, angle = self.power_gauge.stop_oscillation()
+                    self.shoot_ball(power)
+                    self.game_state = GameState.SHOT
        else:
            for event in pygame.event.get():
                if event.type == pygame.QUIT:
